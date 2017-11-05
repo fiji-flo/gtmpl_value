@@ -1,0 +1,7 @@
+[package]
+name = "gtmpl_value"
+version = "0.1.0"
+authors = ["Florian Merz <flomerz@gmail.com>"]
+
+[dependencies]
+num-traits = "0.1.40"
