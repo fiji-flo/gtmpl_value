@@ -44,7 +44,8 @@ pub enum Value {
 
 impl Value {
     pub fn from<T>(t: T) -> Self
-        where T: Into<Value>
+    where
+        T: Into<Value>,
     {
         t.into()
     }
@@ -52,14 +53,14 @@ impl Value {
 
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            &Value::Nil => write!(f, "nil"),
-            &Value::Bool(ref b) => write!(f, "{}", b),
-            &Value::String(ref s) => write!(f, "{}", s),
-            &Value::Function(ref func) => write!(f, "{}", func),
-            &Value::Number(ref n) => write!(f, "{}", n),
-            &Value::Array(ref a) => write!(f, "{:?}", a),
-            &Value::Object(ref o) => write!(f, "{:?}", o),
+        match *self {
+            Value::Nil => write!(f, "nil"),
+            Value::Bool(ref b) => write!(f, "{}", b),
+            Value::String(ref s) => write!(f, "{}", s),
+            Value::Function(ref func) => write!(f, "{}", func),
+            Value::Number(ref n) => write!(f, "{}", n),
+            Value::Array(ref a) => write!(f, "{:?}", a),
+            Value::Object(ref o) => write!(f, "{:?}", o),
         }
 
     }

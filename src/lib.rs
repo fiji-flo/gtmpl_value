@@ -30,21 +30,22 @@ macro_rules! gtmpl_fn {
     ) => {
         $(#[$outer])*
         pub fn $name(args: &[::std::sync::Arc<::std::any::Any>]) -> Result<::std::sync::Arc<::std::any::Any>, String> {
+            #[allow(unused_mut)]
             let mut args = args;
             if args.is_empty() {
                 return Err(String::from("at least one argument required"));
             }
             let x = &args[0];
             let $arg0 = x.downcast_ref::<::gtmpl_value::Value>()
-                .ok_or_else(|| format!("unable to downcast"))?;
+                .ok_or_else(|| "unable to downcast".to_owned())?;
             let $arg0: $typ0 = ::gtmpl_value::from_value($arg0)
-                .ok_or_else(|| format!("unable to convert from Value"))?;
+                .ok_or_else(|| "unable to convert from Value".to_owned())?;
             $(args = &args[1..];
               let x = &args[0];
               let $arg = x.downcast_ref::<::gtmpl_value::Value>()
-              .ok_or_else(|| format!("unable to downcast"))?;
+              .ok_or_else(|| "unable to downcast".to_owned())?;
               let $arg: $typ = ::gtmpl_value::from_value($arg)
-                .ok_or_else(|| format!("unable to convert from Value"))?;)*;
+                .ok_or_else(|| "unable to convert from Value".to_owned())?;)*;
             fn inner($arg0 : $typ0, $($arg : $typ,)*) -> Result<$otyp, String> {
                 $($body)*
             }
@@ -59,11 +60,11 @@ macro_rules! gtmpl_fn {
 
 
 pub trait FromValue<T> {
-    fn from_value<'a>(val: &'a Value) -> Option<T>;
+    fn from_value(val: &Value) -> Option<T>;
 }
 
 impl FromValue<i64> for i64 {
-    fn from_value<'a>(val: &'a Value) -> Option<i64> {
+    fn from_value(val: &Value) -> Option<i64> {
         if let Value::Number(ref n) = *val {
             n.as_i64()
         } else {
@@ -73,7 +74,7 @@ impl FromValue<i64> for i64 {
 }
 
 impl FromValue<u64> for u64 {
-    fn from_value<'a>(val: &'a Value) -> Option<u64> {
+    fn from_value(val: &Value) -> Option<u64> {
         if let Value::Number(ref n) = *val {
             n.as_u64()
         } else {
@@ -83,7 +84,7 @@ impl FromValue<u64> for u64 {
 }
 
 impl FromValue<f64> for f64 {
-    fn from_value<'a>(val: &'a Value) -> Option<f64> {
+    fn from_value(val: &Value) -> Option<f64> {
         if let Value::Number(ref n) = *val {
             n.as_f64()
         } else {
@@ -93,7 +94,7 @@ impl FromValue<f64> for f64 {
 }
 
 impl FromValue<String> for String {
-    fn from_value<'a>(val: &'a Value) -> Option<String> {
+    fn from_value(val: &Value) -> Option<String> {
         if let Value::String(ref s) = *val {
             Some(s.clone())
         } else {
@@ -102,8 +103,9 @@ impl FromValue<String> for String {
     }
 }
 
-pub fn from_value<'a, T>(val: &'a Value) -> Option<T>
-    where T: FromValue<T>
+pub fn from_value<T>(val: &Value) -> Option<T>
+where
+    T: FromValue<T>,
 {
     T::from_value(val)
 

@@ -1,4 +1,4 @@
-use std::{u64, i64, f64};
+use std::{u64, i64, f64, f32};
 use std::cmp::{Ordering, PartialOrd};
 use std::fmt;
 
@@ -34,14 +34,6 @@ impl PartialEq for Num {
             _ => false,
         }
     }
-    fn ne(&self, other: &Num) -> bool {
-        match (*self, *other) {
-            (Num::U(s), Num::U(o)) => s.ne(&o),
-            (Num::I(s), Num::I(o)) => s.ne(&o),
-            (Num::F(s), Num::F(o)) => s.ne(&o),
-            _ => true,
-        }
-    }
 }
 
 impl Number {
@@ -56,7 +48,7 @@ impl Number {
             }
             Num::I(n) => Some(n),
             Num::F(n) => {
-                if (n as i64) as f64 == n {
+                if n.fract() < f64::EPSILON {
                     Some(n as i64)
                 } else {
                     None
@@ -69,7 +61,7 @@ impl Number {
             Num::U(n) => Some(n),
             Num::I(n) => if n >= 0 { Some(n as u64) } else { None },
             Num::F(n) => {
-                if (n as u64) as f64 == n {
+                if n.fract() < f64::EPSILON && n.is_sign_positive() {
                     Some(n as u64)
                 } else {
                     None
@@ -115,7 +107,7 @@ macro_rules! from_i {
             impl From<$ty> for Number {
                 fn from(n: $ty) -> Self {
                     Number {
-                        n: if n < 0 { Num::I(n as i64) } else { Num::U(n as u64) }
+                        n: if n < 0 { Num::I(i64::from(n)) } else { Num::U(n as u64) }
                     }
                 }
             }
@@ -124,9 +116,20 @@ macro_rules! from_i {
 }
 
 from_i!(
-    i64 i32 i16 i8 isize
+    i64 i32 i16 i8
 );
 
+impl From<isize> for Number {
+    fn from(n: isize) -> Self {
+        Number {
+            n: if n < 0 {
+                Num::I(n as i64)
+            } else {
+                Num::U(n as u64)
+            },
+        }
+    }
+}
 
 macro_rules! from_u {
     ($($ty:ident)*) => {
@@ -134,7 +137,7 @@ macro_rules! from_u {
             impl From<$ty> for Number {
                 fn from(n: $ty) -> Self {
                     Number {
-                        n: Num::U(n as u64),
+                        n: Num::U(u64::from(n)),
                     }
                 }
             }
@@ -143,8 +146,14 @@ macro_rules! from_u {
 }
 
 from_u!(
-    u64 u32 u16 u8 usize
+    u64 u32 u16 u8
 );
+
+impl From<usize> for Number {
+    fn from(n: usize) -> Self {
+        Number { n: Num::U(n as u64) }
+    }
+}
 
 macro_rules! from_f {
     ($($ty:ident)*) => {
@@ -152,10 +161,10 @@ macro_rules! from_f {
             impl From<$ty> for Number {
                 fn from(n: $ty) -> Self {
                     let num = match n {
-                        n if (n as i64) as f64 == (n as f64) => {
+                        n if n.fract() < $ty::EPSILON => {
                             if n.is_sign_negative() { Num::I(n as i64) } else { Num::U(n as u64) }
                         },
-                        n => Num::F(n as f64),
+                        n => Num::F(f64::from(n)),
                     };
                     Number {
                         n: num,

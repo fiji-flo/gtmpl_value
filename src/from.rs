@@ -58,7 +58,8 @@ impl From<Func> for Value {
 }
 
 impl<T> From<Vec<T>> for Value
-    where T: Into<Value> + Clone
+where
+    T: Into<Value> + Clone,
 {
     fn from(f: Vec<T>) -> Self {
         Value::Array(f.iter().cloned().map(|x| x.into()).collect())
@@ -66,7 +67,8 @@ impl<T> From<Vec<T>> for Value
 }
 
 impl<'a, T> From<&'a [T]> for Value
-    where T: Into<Value> + Clone
+where
+    T: Into<Value> + Clone,
 {
     fn from(f: &'a [T]) -> Self {
         Value::Array(f.iter().cloned().map(|x| x.into()).collect())
@@ -74,10 +76,15 @@ impl<'a, T> From<&'a [T]> for Value
 }
 
 impl<T> From<HashMap<String, T>> for Value
-    where T: Into<Value> + Clone
+where
+    T: Into<Value> + Clone,
 {
     fn from(f: HashMap<String, T>) -> Self {
-        Value::Object(f.iter().map(|(s, x)| (s.clone(), x.clone().into())).collect())
+        Value::Object(
+            f.iter()
+                .map(|(s, x)| (s.clone(), x.clone().into()))
+                .collect(),
+        )
     }
 }
 
@@ -88,7 +95,7 @@ mod test {
 
     #[test]
     fn test_vec() {
-        let val: Value = vec!(1, 2, 3).into();
+        let val: Value = vec![1, 2, 3].into();
         if let Value::Array(array) = val {
             assert_eq!(array[0], 1.into());
             assert_eq!(array[1], 2.into());
