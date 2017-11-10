@@ -7,58 +7,6 @@ mod from;
 pub use value::*;
 pub use from::*;
 
-/// Help to write new functions for gtmpl.
-#[macro_export]
-macro_rules! gtmpl_fn {
-    (
-        $(#[$outer:meta])*
-        fn $name:ident() -> Result<$otyp:ty, String>
-        { $($body:tt)* }
-    ) => {
-        $(#[$outer])*
-        pub fn $name(args: &[Arc<Any>]) -> Result<Arc<Any>, String> {
-            fn inner() -> Result<$otyp, String> {
-                $($body)*
-            }
-            Ok(Arc::new(Value::from(inner()?)))
-        }
-    };
-    (
-        $(#[$outer:meta])*
-        fn $name:ident($arg0:ident : $typ0:ty$(, $arg:ident : $typ:ty),*) -> Result<$otyp:ty, String>
-        { $($body:tt)* }
-    ) => {
-        $(#[$outer])*
-        pub fn $name(args: &[::std::sync::Arc<::std::any::Any>]) -> Result<::std::sync::Arc<::std::any::Any>, String> {
-            #[allow(unused_mut)]
-            let mut args = args;
-            if args.is_empty() {
-                return Err(String::from("at least one argument required"));
-            }
-            let x = &args[0];
-            let $arg0 = x.downcast_ref::<::gtmpl_value::Value>()
-                .ok_or_else(|| "unable to downcast".to_owned())?;
-            let $arg0: $typ0 = ::gtmpl_value::from_value($arg0)
-                .ok_or_else(|| "unable to convert from Value".to_owned())?;
-            $(args = &args[1..];
-              let x = &args[0];
-              let $arg = x.downcast_ref::<::gtmpl_value::Value>()
-              .ok_or_else(|| "unable to downcast".to_owned())?;
-              let $arg: $typ = ::gtmpl_value::from_value($arg)
-                .ok_or_else(|| "unable to convert from Value".to_owned())?;)*;
-            fn inner($arg0 : $typ0, $($arg : $typ,)*) -> Result<$otyp, String> {
-                $($body)*
-            }
-            let ret: ::gtmpl_value::Value = inner($arg0, $($arg),*)?.into();
-            Ok(::std::sync::Arc::new(ret))
-        }
-    }
-}
-
-
-
-
-
 pub trait FromValue<T> {
     fn from_value(val: &Value) -> Option<T>;
 }

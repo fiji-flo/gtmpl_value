@@ -14,6 +14,16 @@ enum Num {
     F(f64),
 }
 
+/// ```rust
+/// use gtmpl_value::Number;
+///
+/// let i: Number = 23.into();
+/// let j: Number = 42.into();
+/// let f: Number = 23.42.into();
+///
+/// assert!(i < j);
+/// assert_eq!(i < f, false);
+/// ```
 impl PartialOrd for Num {
     fn partial_cmp(&self, other: &Num) -> Option<Ordering> {
         match (*self, *other) {
@@ -25,6 +35,14 @@ impl PartialOrd for Num {
     }
 }
 
+/// ```rust
+/// use gtmpl_value::Number;
+///
+/// let i: Number = 23.into();
+/// let f: Number = 23.0.into();
+///
+/// assert!(i == f);
+/// ```
 impl PartialEq for Num {
     fn eq(&self, other: &Num) -> bool {
         match (*self, *other) {
@@ -37,6 +55,16 @@ impl PartialEq for Num {
 }
 
 impl Number {
+    /// ```rust
+    /// use std::i64;
+    /// use gtmpl_value::Number;
+    ///
+    /// let big: Number = (i64::MAX as u64 + 10).into();
+    ///
+    /// assert!(big.as_u64().is_some());
+    /// assert!(big.as_i64().is_none());
+    /// assert!(big.as_f64().is_none());
+    /// ```
     pub fn as_i64(&self) -> Option<i64> {
         match self.n {
             Num::U(n) => {
@@ -56,6 +84,16 @@ impl Number {
             }
         }
     }
+    /// ```rust
+    /// use std::i64;
+    /// use gtmpl_value::Number;
+    ///
+    /// let neg: Number = (-10).into();
+    ///
+    /// assert!(neg.as_u64().is_none());
+    /// assert!(neg.as_i64().is_some());
+    /// assert!(neg.as_f64().is_some());
+    /// ```
     pub fn as_u64(&self) -> Option<u64> {
         match self.n {
             Num::U(n) => Some(n),
@@ -69,6 +107,17 @@ impl Number {
             }
         }
     }
+
+    /// ```rust
+    /// use std::i64;
+    /// use gtmpl_value::Number;
+    ///
+    /// let frac: Number = (10.1).into();
+    ///
+    /// assert!(frac.as_u64().is_none());
+    /// assert!(frac.as_i64().is_none());
+    /// assert!(frac.as_f64().is_some());
+    /// ```
     pub fn as_f64(&self) -> Option<f64> {
         match self.n {
             Num::U(n) => {

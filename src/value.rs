@@ -4,7 +4,7 @@ use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use number::Number;
+pub use number::Number;
 
 pub type Func = fn(&[Arc<Any>]) -> Result<Arc<Any>, String>;
 

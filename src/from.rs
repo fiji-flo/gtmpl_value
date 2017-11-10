@@ -22,36 +22,101 @@ from_num! {
 }
 
 impl From<bool> for Value {
+    /// Convert boolean to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let b = false;
+    /// let x: Value = b.into();
+    /// ```
     fn from(b: bool) -> Self {
         Value::Bool(b)
     }
 }
 
 impl<'a> From<&'a String> for Value {
+    /// Convert &String to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let s: &String = &"foobar".to_owned();
+    /// let x: Value = s.into();
+    /// ```
     fn from(s: &'a String) -> Self {
         Value::String(s.clone())
     }
 }
 
 impl From<String> for Value {
+    /// Convert String to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let s: String = "foobar".to_owned();
+    /// let x: Value = s.into();
+    /// ```
     fn from(s: String) -> Self {
         Value::String(s)
     }
 }
 
 impl<'a> From<&'a str> for Value {
+    /// Convert &str to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let s = "foobar";
+    /// let x: Value = s.into();
+    /// ```
     fn from(f: &str) -> Self {
         Value::String(f.to_string())
     }
 }
 
 impl<'a> From<Cow<'a, str>> for Value {
+    /// Convert Cow<str> to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    /// use std::borrow::Cow;
+    ///
+    /// let s: Cow<str> = Cow::Borrowed("foobar");
+    /// let x: Value = s.into();
+    /// ```
     fn from(f: Cow<'a, str>) -> Self {
         Value::String(f.to_string())
     }
 }
 
 impl From<Func> for Value {
+    /// Convert Func to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::{Func, Value};
+    /// use std::any::Any;
+    /// use std::sync::Arc;
+    ///
+    /// fn f(a: &[Arc<Any>]) -> Result<Arc<Any>, String> {
+    ///     Ok(a[0].clone())
+    /// };
+    /// let x: Value = (f as Func).into();
+    /// ```
     fn from(f: Func) -> Self {
         Value::Function(Function { f: f })
     }
@@ -61,6 +126,16 @@ impl<T> From<Vec<T>> for Value
 where
     T: Into<Value> + Clone,
 {
+    /// Convert Vec to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let v = vec!(1, 2, 3);
+    /// let x: Value = v.into();
+    /// ```
     fn from(f: Vec<T>) -> Self {
         Value::Array(f.iter().cloned().map(|x| x.into()).collect())
     }
@@ -70,6 +145,16 @@ impl<'a, T> From<&'a [T]> for Value
 where
     T: Into<Value> + Clone,
 {
+    /// Convert Slice to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let v: &[i32] = &[1, 2, 3];
+    /// let x: Value = v.into();
+    /// ```
     fn from(f: &'a [T]) -> Self {
         Value::Array(f.iter().cloned().map(|x| x.into()).collect())
     }
@@ -79,6 +164,18 @@ impl<T> From<HashMap<String, T>> for Value
 where
     T: Into<Value> + Clone,
 {
+    /// Convert HashMap<String, T> to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    /// use std::collections::HashMap;
+    ///
+    /// let mut m = HashMap::new();
+    /// m.insert("hello".to_owned(), 123);
+    /// let x: Value = m.into();
+    /// ```
     fn from(f: HashMap<String, T>) -> Self {
         Value::Object(
             f.iter()
