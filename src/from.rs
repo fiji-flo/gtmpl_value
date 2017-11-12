@@ -185,6 +185,173 @@ where
     }
 }
 
+/// Convert Value into something.
+pub trait FromValue<T> {
+    /// Tries to retrieve `T` from `Value.`
+    fn from_value(val: &Value) -> Option<T>;
+}
+
+impl FromValue<i64> for i64 {
+    /// Tries to retrieve `i64` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    ///
+    /// let v: Value = 23i64.into();
+    /// let i = i64::from_value(&v);
+    /// assert_eq!(i, Some(23i64));
+    /// ```
+    fn from_value(val: &Value) -> Option<i64> {
+        if let Value::Number(ref n) = *val {
+            n.as_i64()
+        } else {
+            None
+        }
+    }
+}
+
+impl FromValue<u64> for u64 {
+    /// Tries to retrieve `u64` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    ///
+    /// let v: Value = 23u64.into();
+    /// let i = u64::from_value(&v);
+    /// assert_eq!(i, Some(23u64));
+    /// ```
+    fn from_value(val: &Value) -> Option<u64> {
+        if let Value::Number(ref n) = *val {
+            n.as_u64()
+        } else {
+            None
+        }
+    }
+}
+
+impl FromValue<f64> for f64 {
+    /// Tries to retrieve `f64` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    ///
+    /// let v: Value = 23.1f64.into();
+    /// let i = f64::from_value(&v);
+    /// assert_eq!(i, Some(23.1f64));
+    /// ```
+    fn from_value(val: &Value) -> Option<f64> {
+        if let Value::Number(ref n) = *val {
+            n.as_f64()
+        } else {
+            None
+        }
+    }
+}
+
+impl FromValue<String> for String {
+    /// Tries to retrieve `String` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    ///
+    /// let v: Value = "foobar".into();
+    /// let s = String::from_value(&v);
+    /// assert_eq!(s, Some("foobar".to_owned()));
+    /// ```
+    fn from_value(val: &Value) -> Option<String> {
+        if let Value::String(ref s) = *val {
+            Some(s.clone())
+        } else {
+            None
+        }
+    }
+}
+
+impl<T> FromValue<Vec<T>> for Vec<T>
+    where T: FromValue<T>
+{
+    /// Tries to retrieve `Vec<T>` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    ///
+    /// let v: Value = vec!(1, 2, 3).into();
+    /// let v: Option<Vec<i64>> = Vec::from_value(&v);
+    /// assert_eq!(v, Some(vec!(1, 2, 3)));
+    /// ```
+    fn from_value(val: &Value) -> Option<Vec<T>> {
+        if let Value::Array(ref a) = *val {
+            let v: Vec<T> = a.iter().flat_map(|v| T::from_value(v)).collect();
+            if v.len() == a.len() {
+                return Some(v)
+            }
+        }
+        None
+    }
+}
+
+impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
+    where T: FromValue<T>
+{
+    /// Tries to retrieve `HashMap<String, T>` from `Value.`
+    ///
+    /// # Examples:
+    ///
+    /// ```rust
+    /// use gtmpl_value::{FromValue, Value};
+    /// use std::collections::HashMap;
+    ///
+    /// let mut m = HashMap::new();
+    /// m.insert("a".to_owned(), 1);
+    /// let v: Value = m.into();
+    /// let m: Option<HashMap<String, i64>> = HashMap::from_value(&v);
+    /// assert!(m.is_some());
+    /// if let Some(m) = m {
+    ///   assert_eq!(m.get("a"), Some(&1));
+    /// }
+    /// ```
+    fn from_value(val: &Value) -> Option<HashMap<String, T>> {
+        if let Value::Object(ref o) = *val {
+            let m: HashMap<String, T> = o.iter()
+                .map(|(s, v)| (s.clone(), T::from_value(v)))
+                .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
+                .collect();
+            if m.len() == o.len() {
+                return Some(m)
+            }
+        }
+        None
+    }
+}
+
+/// `FromValue` wrapped in a macro (required for `gtmpl_fn!` macro).
+///
+/// # Examples:
+///
+/// ```rust
+/// use gtmpl_value::{from_value, Value};
+///
+/// let v: Value = 1.into();
+/// let s: Option<i64> = from_value(&v);
+/// assert_eq!(s, Some(1));
+/// ```
+pub fn from_value<T>(val: &Value) -> Option<T>
+    where
+    T: FromValue<T>,
+{
+    T::from_value(val)
+
+}
 
 #[cfg(test)]
 mod test {
