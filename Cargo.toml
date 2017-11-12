@@ -2,6 +2,14 @@
 name = "gtmpl_value"
 version = "0.1.0"
 authors = ["Florian Merz <flomerz@gmail.com>"]
+description = "Internal Value Format for gtmpl-rust"
+license = "MIT"
+repository = "https://github.com/fiji-flo/gtmpl_value"
+documentation = "https://docs.rs/crate/gtmpl_value"
+keywords = ["golang", "template", "templating"]
+categories = ["template-engine"]
+readme = "README.md"
+include = ["Cargo.toml", "src/**/*.rs", "tests/**/*.rs", "README.md", "LICENSE"]
 
 [dependencies]
 num-traits = "0.1.40"

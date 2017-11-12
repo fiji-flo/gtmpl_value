@@ -2,7 +2,7 @@ use std::{u64, i64, f64, f32};
 use std::cmp::{Ordering, PartialOrd};
 use std::fmt;
 
-/// Internal number format for gtmpl_value.
+/// Internal number format for `gtmpl_value`.
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Number {
     n: Num,
@@ -15,7 +15,7 @@ enum Num {
     F(f64),
 }
 
-/// PartialOrd for Number
+/// `PartialOrd` for `Number`.
 ///
 /// # Examples
 ///
@@ -43,7 +43,7 @@ impl PartialOrd for Num {
     }
 }
 
-/// PartialEq for Number
+/// `PartialEq` for `Number`.
 ///
 /// # Examples
 ///
