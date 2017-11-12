@@ -6,10 +6,9 @@ description = "Internal Value Format for gtmpl-rust"
 license = "MIT"
 repository = "https://github.com/fiji-flo/gtmpl_value"
 documentation = "https://docs.rs/crate/gtmpl_value"
-keywords = ["golang", "template", "templating"]
-categories = ["template-engine"]
+keywords = ["gtmpl-rust", "gtmpl", "golang", "template", "templating"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "tests/**/*.rs", "README.md", "LICENSE"]
 
-[dependencies]
-num-traits = "0.1.40"
+[badges]
+travis-ci = { repository = "fiji-flo/gtmpl_value" }

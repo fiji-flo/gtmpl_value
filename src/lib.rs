@@ -28,8 +28,6 @@
 //! }
 //! ```
 
-extern crate num_traits;
-
 mod number;
 mod value;
 mod from;
