@@ -2,6 +2,7 @@ use std::{u64, i64, f64, f32};
 use std::cmp::{Ordering, PartialOrd};
 use std::fmt;
 
+/// Internal number format for gtmpl_value.
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Number {
     n: Num,
@@ -14,15 +15,17 @@ enum Num {
     F(f64),
 }
 
+/// PartialOrd for Number
+///
+/// # Examples
+///
 /// ```rust
 /// use gtmpl_value::Number;
 ///
 /// let i: Number = 23.into();
-/// let j: Number = 42.into();
 /// let f: Number = 23.42.into();
 ///
-/// assert!(i < j);
-/// assert_eq!(i < f, false);
+/// assert!(i < f);
 /// ```
 impl PartialOrd for Num {
     fn partial_cmp(&self, other: &Num) -> Option<Ordering> {
@@ -30,11 +33,20 @@ impl PartialOrd for Num {
             (Num::U(s), Num::U(o)) => s.partial_cmp(&o),
             (Num::I(s), Num::I(o)) => s.partial_cmp(&o),
             (Num::F(s), Num::F(o)) => s.partial_cmp(&o),
-            _ => None,
+            (Num::I(_), Num::U(_)) => Some(Ordering::Less),
+            (Num::U(_), Num::I(_)) => Some(Ordering::Greater),
+            (Num::F(s), Num::I(o)) => s.partial_cmp(&(o as f64)),
+            (Num::I(s), Num::F(o)) => (s as f64).partial_cmp(&o),
+            (Num::F(s), Num::U(o)) => s.partial_cmp(&(o as f64)),
+            (Num::U(s), Num::F(o)) => (s as f64).partial_cmp(&o),
         }
     }
 }
 
+/// PartialEq for Number
+///
+/// # Examples
+///
 /// ```rust
 /// use gtmpl_value::Number;
 ///
@@ -270,5 +282,12 @@ mod test {
         let a: Number = 23.0f64.into();
         let b: Number = 24u64.into();
         assert!(a <= b);
+    }
+
+    #[test]
+    fn test_ge() {
+        let a: Number = 1u64.into();
+        let b: Number = (-1i64).into();
+        assert!(a > b);
     }
 }
