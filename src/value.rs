@@ -4,10 +4,14 @@ use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::sync::Arc;
 
+
+#[doc(inline)]
 pub use number::Number;
 
+/// Function type supported by `gtmpl_value`.
 pub type Func = fn(&[Arc<Any>]) -> Result<Arc<Any>, String>;
 
+/// Wrapper struct for `Func`.
 #[derive(Clone)]
 pub struct Function {
     pub f: Func,
@@ -31,6 +35,7 @@ impl fmt::Display for Function {
     }
 }
 
+/// Represents a gtmpl value.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Value {
     Nil,
