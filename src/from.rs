@@ -276,7 +276,8 @@ impl FromValue<String> for String {
 }
 
 impl<T> FromValue<Vec<T>> for Vec<T>
-    where T: FromValue<T>
+where
+    T: FromValue<T>,
 {
     /// Tries to retrieve `Vec<T>` from `Value.`
     ///
@@ -293,7 +294,7 @@ impl<T> FromValue<Vec<T>> for Vec<T>
         if let Value::Array(ref a) = *val {
             let v: Vec<T> = a.iter().flat_map(|v| T::from_value(v)).collect();
             if v.len() == a.len() {
-                return Some(v)
+                return Some(v);
             }
         }
         None
@@ -301,7 +302,8 @@ impl<T> FromValue<Vec<T>> for Vec<T>
 }
 
 impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
-    where T: FromValue<T>
+where
+    T: FromValue<T>,
 {
     /// Tries to retrieve `HashMap<String, T>` from `Value.`
     ///
@@ -327,7 +329,7 @@ impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
                 .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
                 .collect();
             if m.len() == o.len() {
-                return Some(m)
+                return Some(m);
             }
         }
         None
@@ -346,7 +348,7 @@ impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
 /// assert_eq!(s, Some(1));
 /// ```
 pub fn from_value<T>(val: &Value) -> Option<T>
-    where
+where
     T: FromValue<T>,
 {
     T::from_value(val)
@@ -364,6 +366,14 @@ mod test {
             assert_eq!(array[0], 1.into());
             assert_eq!(array[1], 2.into());
             assert_eq!(array[2], 3.into());
+        } else {
+            assert!(false);
+        }
+
+        let val: Value = vec!["foo", "bar"].into();
+        if let Value::Array(array) = val {
+            assert_eq!(array[0], "foo".into());
+            assert_eq!(array[1], "bar".into());
         } else {
             assert!(false);
         }
