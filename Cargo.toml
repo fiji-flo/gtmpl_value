@@ -1,6 +1,6 @@
 [package]
 name = "gtmpl_value"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Florian Merz <flomerz@gmail.com>"]
 description = "Internal Value Format for gtmpl-rust"
 license = "MIT"

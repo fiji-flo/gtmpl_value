@@ -38,10 +38,12 @@ impl fmt::Display for Function {
 /// Represents a gtmpl value.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Value {
+    NoValue,
     Nil,
     Bool(bool),
     String(String),
     Object(HashMap<String, Value>),
+    Map(HashMap<String, Value>),
     Array(Vec<Value>),
     Function(Function),
     Number(Number),
@@ -59,6 +61,7 @@ impl Value {
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
+            Value::NoValue => write!(f, "<no value>"),
             Value::Nil => write!(f, "nil"),
             Value::Bool(ref b) => write!(f, "{}", b),
             Value::String(ref s) => write!(f, "{}", s),
@@ -66,6 +69,7 @@ impl fmt::Display for Value {
             Value::Number(ref n) => write!(f, "{}", n),
             Value::Array(ref a) => write!(f, "{:?}", a),
             Value::Object(ref o) => write!(f, "{:?}", o),
+            Value::Map(ref m) => write!(f, "{:?}", m),
         }
 
     }

@@ -177,7 +177,7 @@ where
     /// let x: Value = m.into();
     /// ```
     fn from(f: HashMap<String, T>) -> Self {
-        Value::Object(
+        Value::Map(
             f.iter()
                 .map(|(s, x)| (s.clone(), x.clone().into()))
                 .collect(),
@@ -301,6 +301,8 @@ where
     }
 }
 
+#[allow(unknown_lints)]
+#[allow(implicit_hasher)]
 impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
 where
     T: FromValue<T>,
@@ -323,16 +325,17 @@ where
     /// }
     /// ```
     fn from_value(val: &Value) -> Option<HashMap<String, T>> {
-        if let Value::Object(ref o) = *val {
-            let m: HashMap<String, T> = o.iter()
-                .map(|(s, v)| (s.clone(), T::from_value(v)))
-                .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
-                .collect();
-            if m.len() == o.len() {
-                return Some(m);
+        match *val {
+            Value::Object(ref o) |
+            Value::Map(ref o) => {
+                let m: HashMap<String, T> = o.iter()
+                    .map(|(s, v)| (s.clone(), T::from_value(v)))
+                    .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
+                    .collect();
+                if m.len() == o.len() { Some(m) } else { None }
             }
+            _ => None,
         }
-        None
     }
 }
 
@@ -398,7 +401,7 @@ mod test {
         m.insert("a".to_owned(), 1);
         m.insert("b".to_owned(), 2);
         let val: Value = m.into();
-        if let Value::Object(obj) = val {
+        if let Value::Map(obj) = val {
             assert_eq!(obj.get("a"), Some(&(1.into())));
             assert_eq!(obj.get("b"), Some(&(2.into())));
         } else {
