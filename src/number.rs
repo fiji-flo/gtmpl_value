@@ -1,4 +1,4 @@
-use std::{u64, i64, f64, f32};
+use std::{f32, f64, i64, u64};
 use std::cmp::{Ordering, PartialOrd};
 use std::fmt;
 
@@ -109,7 +109,11 @@ impl Number {
     pub fn as_u64(&self) -> Option<u64> {
         match self.n {
             Num::U(n) => Some(n),
-            Num::I(n) => if n >= 0 { Some(n as u64) } else { None },
+            Num::I(n) => if n >= 0 {
+                Some(n as u64)
+            } else {
+                None
+            },
             Num::F(n) => {
                 if n.fract() < f64::EPSILON && n.is_sign_positive() {
                     Some(n as u64)
@@ -161,7 +165,6 @@ impl fmt::Display for Number {
     }
 }
 
-
 macro_rules! from_i {
     ($($ty:ident)*) => {
         $(
@@ -212,7 +215,9 @@ from_u!(
 
 impl From<usize> for Number {
     fn from(n: usize) -> Self {
-        Number { n: Num::U(n as u64) }
+        Number {
+            n: Num::U(n as u64),
+        }
     }
 }
 

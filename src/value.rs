@@ -4,7 +4,6 @@ use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-
 #[doc(inline)]
 pub use number::Number;
 
@@ -71,6 +70,5 @@ impl fmt::Display for Value {
             Value::Object(ref o) => write!(f, "{:?}", o),
             Value::Map(ref m) => write!(f, "{:?}", m),
         }
-
     }
 }
