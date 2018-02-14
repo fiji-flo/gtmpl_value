@@ -109,10 +109,8 @@ impl From<Func> for Value {
     ///
     /// ```rust
     /// use gtmpl_value::{Func, Value};
-    /// use std::any::Any;
-    /// use std::sync::Arc;
     ///
-    /// fn f(a: &[Arc<Any>]) -> Result<Arc<Any>, String> {
+    /// fn f(a: &[Value]) -> Result<Value, String> {
     ///     Ok(a[0].clone())
     /// };
     /// let x: Value = (f as Func).into();

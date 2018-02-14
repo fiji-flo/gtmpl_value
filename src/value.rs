@@ -1,14 +1,12 @@
-use std::any::Any;
 use std::fmt;
 use std::cmp::PartialEq;
 use std::collections::HashMap;
-use std::sync::Arc;
 
 #[doc(inline)]
 pub use number::Number;
 
 /// Function type supported by `gtmpl_value`.
-pub type Func = fn(&[Arc<Any>]) -> Result<Arc<Any>, String>;
+pub type Func = fn(&[Value]) -> Result<Value, String>;
 
 /// Wrapper struct for `Func`.
 #[derive(Clone)]

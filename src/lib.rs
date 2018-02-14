@@ -37,13 +37,11 @@ pub use from::*;
 
 #[cfg(test)]
 mod test {
-    use std::any::Any;
-    use std::sync::Arc;
     use super::*;
 
     #[test]
     fn test_function_cmp() {
-        fn f(a: &[Arc<Any>]) -> Result<Arc<Any>, String> {
+        fn f(a: &[Value]) -> Result<Value, String> {
             Ok(a[0].clone())
         };
         let f1 = Function { f: f };
