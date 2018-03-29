@@ -28,12 +28,12 @@
 //! }
 //! ```
 
+mod from;
 mod number;
 mod value;
-mod from;
 
-pub use value::*;
 pub use from::*;
+pub use value::*;
 
 #[cfg(test)]
 mod test {

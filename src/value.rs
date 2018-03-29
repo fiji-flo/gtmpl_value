@@ -1,6 +1,6 @@
-use std::fmt;
 use std::cmp::PartialEq;
 use std::collections::HashMap;
+use std::fmt;
 
 #[doc(inline)]
 pub use number::Number;

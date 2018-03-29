@@ -116,7 +116,7 @@ impl From<Func> for Value {
     /// let x: Value = (f as Func).into();
     /// ```
     fn from(f: Func) -> Self {
-        Value::Function(Function { f: f })
+        Value::Function(Function { f })
     }
 }
 

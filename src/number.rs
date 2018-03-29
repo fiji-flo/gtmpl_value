@@ -1,6 +1,6 @@
-use std::{f32, f64, i64, u64};
 use std::cmp::{Ordering, PartialOrd};
 use std::fmt;
+use std::{f32, f64, i64, u64};
 
 /// Internal number format for `gtmpl_value`.
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
