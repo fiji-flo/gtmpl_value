@@ -325,7 +325,8 @@ where
     fn from_value(val: &Value) -> Option<HashMap<String, T>> {
         match *val {
             Value::Object(ref o) | Value::Map(ref o) => {
-                let m: HashMap<String, T> = o.iter()
+                let m: HashMap<String, T> = o
+                    .iter()
                     .map(|(s, v)| (s.clone(), T::from_value(v)))
                     .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
                     .collect();
