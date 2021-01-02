@@ -32,8 +32,8 @@ mod from;
 mod number;
 mod value;
 
-pub use from::*;
-pub use value::*;
+pub use crate::from::*;
+pub use crate::value::*;
 
 #[cfg(test)]
 mod test {
@@ -44,8 +44,8 @@ mod test {
         fn f(a: &[Value]) -> Result<Value, String> {
             Ok(a[0].clone())
         };
-        let f1 = Function { f: f };
-        let f2 = Function { f: f };
+        let f1 = Function { f };
+        let f2 = Function { f };
         assert_eq!(f1, f2);
     }
 }

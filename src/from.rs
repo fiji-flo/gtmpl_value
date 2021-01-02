@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-use value::{Func, Function, Value};
+use crate::value::{Func, Function, Value};
 
 macro_rules! from_num {
     ($($ty:ident)*) => {
@@ -183,6 +183,28 @@ where
     }
 }
 
+impl<T> From<Option<T>> for Value
+where
+    T: Into<Value> + Clone,
+{
+    /// Convert Option<T> to `Value`
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use gtmpl_value::Value;
+    ///
+    /// let i = Some(1);
+    /// let x: Value = i.into();
+    /// ```
+    fn from(f: Option<T>) -> Self {
+        match f {
+            Some(x) => x.into(),
+            _ => Value::NoValue,
+        }
+    }
+}
+
 /// Convert Value into something.
 pub trait FromValue<T> {
     /// Tries to retrieve `T` from `Value.`
@@ -299,8 +321,7 @@ where
     }
 }
 
-#[allow(unknown_lints)]
-#[allow(implicit_hasher)]
+#[allow(clippy::implicit_hasher)]
 impl<T> FromValue<HashMap<String, T>> for HashMap<String, T>
 where
     T: FromValue<T>,

@@ -1,6 +1,4 @@
-# gtmpl_value &emsp; [![Build Status]][travis] [![Latest Version]][crates.io]
-[Build Status]: https://travis-ci.org/fiji-flo/gtmpl_value.svg?branch=master
-[travis]: https://travis-ci.org/fiji-flo/gtmpl_value
+# gtmpl_value &emsp; [![Latest Version]][crates.io]
 [Latest Version]: https://img.shields.io/crates/v/gtmpl_value.svg
 [crates.io]: https://crates.io/crates/gtmpl_value
 
@@ -11,7 +9,7 @@
 
 ```toml
 [dependencies]
-gtmpl_value = "0.3.3"
+gtmpl_value = "0.4"
 ```
 
 * [gtmpl_value at crates.io](https://crates.io/crate/gtmpl_value)

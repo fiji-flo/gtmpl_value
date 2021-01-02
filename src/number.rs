@@ -87,13 +87,7 @@ impl Number {
                 }
             }
             Num::I(n) => Some(n),
-            Num::F(n) => {
-                if n.fract() < f64::EPSILON {
-                    Some(n as i64)
-                } else {
-                    None
-                }
-            }
+            _ => None,
         }
     }
     /// ```rust
@@ -104,23 +98,19 @@ impl Number {
     ///
     /// assert!(neg.as_u64().is_none());
     /// assert!(neg.as_i64().is_some());
-    /// assert!(neg.as_f64().is_some());
+    /// assert!(neg.as_f64().is_none());
     /// ```
     pub fn as_u64(&self) -> Option<u64> {
         match self.n {
             Num::U(n) => Some(n),
-            Num::I(n) => if n >= 0 {
-                Some(n as u64)
-            } else {
-                None
-            },
-            Num::F(n) => {
-                if n.fract() < f64::EPSILON && n.is_sign_positive() {
+            Num::I(n) => {
+                if n >= 0 {
                     Some(n as u64)
                 } else {
                     None
                 }
             }
+            _ => None,
         }
     }
 
@@ -136,27 +126,14 @@ impl Number {
     /// ```
     pub fn as_f64(&self) -> Option<f64> {
         match self.n {
-            Num::U(n) => {
-                if (n as f64) <= f64::MAX && (n as f64) as u64 == n {
-                    Some(n as f64)
-                } else {
-                    None
-                }
-            }
-            Num::I(n) => {
-                if (n as f64) <= f64::MAX && (n as f64) >= f64::MIN && n == (n as f64) as i64 {
-                    Some(n as f64)
-                } else {
-                    None
-                }
-            }
             Num::F(n) => Some(n),
+            _ => None,
         }
     }
 }
 
 impl fmt::Display for Number {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.n {
             Num::U(n) => write!(f, "{}", n),
             Num::I(n) => write!(f, "{}", n),
@@ -255,7 +232,7 @@ mod test {
         let num: Number = (-23i8).into();
         assert_eq!(num.as_i64(), Some(-23i64));
         assert_eq!(num.as_u64(), None);
-        assert_eq!(num.as_f64(), Some(-23f64));
+        assert_eq!(num.as_f64(), None);
     }
 
     #[test]
@@ -263,7 +240,7 @@ mod test {
         let num: Number = 23u8.into();
         assert_eq!(num.as_i64(), Some(23i64));
         assert_eq!(num.as_u64(), Some(23u64));
-        assert_eq!(num.as_f64(), Some(23f64));
+        assert_eq!(num.as_f64(), None);
     }
 
     #[test]

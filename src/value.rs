@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 #[doc(inline)]
-pub use number::Number;
+pub use crate::number::Number;
 
 /// Function type supported by `gtmpl_value`.
 pub type Func = fn(&[Value]) -> Result<Value, String>;
@@ -21,13 +21,13 @@ impl PartialEq for Function {
 }
 
 impl fmt::Debug for Function {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Funtion")
     }
 }
 
 impl fmt::Display for Function {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Funtion")
     }
 }
@@ -56,7 +56,7 @@ impl Value {
 }
 
 impl fmt::Display for Value {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             Value::NoValue => write!(f, "<no value>"),
             Value::Nil => write!(f, "nil"),
