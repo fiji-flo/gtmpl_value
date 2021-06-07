@@ -1,8 +1,8 @@
 [package]
 name = "gtmpl_value"
-version = "0.4.0"
-authors = ["Florian Merz <me@fiji-flo.de>"]
-description = "Internal Value Format for gtmpl-rust"
+version = "0.5.0"
+authors = ["Florian Dieminger <me@fiji-flo.de>"]
+description = "Internal value format for gtmpl-rust"
 license = "MIT"
 repository = "https://github.com/fiji-flo/gtmpl_value"
 documentation = "https://docs.rs/crate/gtmpl_value"
@@ -13,3 +13,7 @@ edition = "2018"
 
 [badges]
 maintenance = { status = "passively-maintained" }
+
+[dependencies]
+anyhow = "1"
+thiserror = "1"

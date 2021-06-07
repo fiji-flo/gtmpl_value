@@ -1,12 +1,27 @@
 use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::fmt;
+use thiserror::Error;
 
 #[doc(inline)]
 pub use crate::number::Number;
 
+#[derive(Debug, Error)]
+pub enum FuncError {
+    #[error("unable to convert argument from value")]
+    UnableToConvertFromValue,
+    #[error("{0} requires at least {1} argument(s)")]
+    AtLeastXArgs(String, usize),
+    #[error("{0} requires exactly {1} argument(s)")]
+    ExactlyXArgs(String, usize),
+    #[error("{0}")]
+    Generic(String),
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
+}
+
 /// Function type supported by `gtmpl_value`.
-pub type Func = fn(&[Value]) -> Result<Value, String>;
+pub type Func = fn(&[Value]) -> Result<Value, FuncError>;
 
 /// Wrapper struct for `Func`.
 #[derive(Clone)]

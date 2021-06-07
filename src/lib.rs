@@ -41,9 +41,9 @@ mod test {
 
     #[test]
     fn test_function_cmp() {
-        fn f(a: &[Value]) -> Result<Value, String> {
+        fn f(a: &[Value]) -> Result<Value, FuncError> {
             Ok(a[0].clone())
-        };
+        }
         let f1 = Function { f };
         let f2 = Function { f };
         assert_eq!(f1, f2);

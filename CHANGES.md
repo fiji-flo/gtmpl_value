@@ -1,5 +1,6 @@
 # Changes
-## 0.4.0
-* Rust 2018
-* Stop casting between float and int
-* Implement `From<Option<T: Value>>`
+
+## [0.5.0]
+### Changed
+
+- Move from `String` to `thiserror` for errors

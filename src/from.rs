@@ -108,9 +108,9 @@ impl From<Func> for Value {
     /// # Examples
     ///
     /// ```rust
-    /// use gtmpl_value::{Func, Value};
+    /// use gtmpl_value::{Func, FuncError, Value};
     ///
-    /// fn f(a: &[Value]) -> Result<Value, String> {
+    /// fn f(a: &[Value]) -> Result<Value, FuncError> {
     ///     Ok(a[0].clone())
     /// };
     /// let x: Value = (f as Func).into();
@@ -349,7 +349,7 @@ where
                 let m: HashMap<String, T> = o
                     .iter()
                     .map(|(s, v)| (s.clone(), T::from_value(v)))
-                    .flat_map(|(s, t)| if let Some(t) = t { Some((s, t)) } else { None })
+                    .flat_map(|(s, t)| t.map(|t| (s, t)))
                     .collect();
                 if m.len() == o.len() {
                     Some(m)
@@ -392,7 +392,7 @@ mod test {
             assert_eq!(array[1], 2.into());
             assert_eq!(array[2], 3.into());
         } else {
-            assert!(false);
+            panic!();
         }
 
         let val: Value = vec!["foo", "bar"].into();
@@ -400,7 +400,7 @@ mod test {
             assert_eq!(array[0], "foo".into());
             assert_eq!(array[1], "bar".into());
         } else {
-            assert!(false);
+            panic!();
         }
     }
 
@@ -413,7 +413,7 @@ mod test {
             assert_eq!(array[1], 2.into());
             assert_eq!(array[2], 3.into());
         } else {
-            assert!(false);
+            panic!();
         }
     }
 
@@ -427,7 +427,7 @@ mod test {
             assert_eq!(obj.get("a"), Some(&(1.into())));
             assert_eq!(obj.get("b"), Some(&(2.into())));
         } else {
-            assert!(false);
+            panic!();
         }
     }
 }
