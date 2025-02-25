@@ -16,5 +16,5 @@ maintenance = { status = "passively-maintained" }
 
 [dependencies]
 anyhow = "1"
-serde = { version = "1.0.131", optional = true, features = ["derive"] }
+serde = { version = "1", optional = true, features = ["derive"] }
 thiserror = "1"
