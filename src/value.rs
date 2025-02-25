@@ -37,26 +37,30 @@ impl PartialEq for Function {
 
 impl fmt::Debug for Function {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Funtion")
+        write!(f, "Function")
     }
 }
 
 impl fmt::Display for Function {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Funtion")
+        write!(f, "Function")
     }
 }
 
 /// Represents a gtmpl value.
 #[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(untagged))]
 pub enum Value {
     NoValue,
     Nil,
     Bool(bool),
     String(String),
+    #[cfg_attr(feature = "serde", serde(skip))]
     Object(HashMap<String, Value>),
     Map(HashMap<String, Value>),
     Array(Vec<Value>),
+    #[cfg_attr(feature = "serde", serde(skip))]
     Function(Function),
     Number(Number),
 }

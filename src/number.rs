@@ -8,6 +8,30 @@ pub struct Number {
     n: Num,
 }
 
+#[cfg(feature = "serde")]
+impl serde::Serialize for Number {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.n.serialize(serializer)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for Number {
+    fn deserialize<D>(deserializer: D) -> Result<Number, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Ok(Number {
+            n: Num::deserialize(deserializer)?,
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(untagged))]
 #[derive(Copy, Clone, Debug)]
 enum Num {
     U(u64),
