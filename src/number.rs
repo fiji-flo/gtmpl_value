@@ -204,7 +204,7 @@ macro_rules! from_f {
             impl From<$ty> for Number {
                 fn from(n: $ty) -> Self {
                     let num = match n {
-                        n if n.fract() < $ty::EPSILON => {
+                        n if n.fract().abs() < $ty::EPSILON => {
                             if n.is_sign_negative() { Num::I(n as i64) } else { Num::U(n as u64) }
                         },
                         n => Num::F(f64::from(n)),
@@ -257,6 +257,10 @@ mod test {
         assert_eq!(num.as_i64(), None);
         assert_eq!(num.as_u64(), None);
         assert_eq!(num.as_f64(), Some(23.42f64));
+        let num: Number = (-23.42f64).into();
+        assert_eq!(num.as_i64(), None);
+        assert_eq!(num.as_u64(), None);
+        assert_eq!(num.as_f64(), Some(-23.42f64));
     }
 
     #[test]
